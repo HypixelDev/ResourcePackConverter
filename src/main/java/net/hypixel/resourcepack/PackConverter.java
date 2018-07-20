@@ -29,6 +29,7 @@ public class PackConverter {
         this.registerConverter(new SpacesConverter());
         this.registerConverter(new SoundsConverter());
         this.registerConverter(new ParticleConverter());
+        this.registerConverter(new BlockStateConverter());
     }
 
     public void registerConverter(Converter converter) {
