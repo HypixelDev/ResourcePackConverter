@@ -4,6 +4,6 @@ import java.io.IOException;
 
 public abstract class Converter {
 
-    public abstract void rewrite(PackConverter main, Pack pack) throws IOException;
+    public abstract void convert(PackConverter main, Pack pack) throws IOException;
 
 }

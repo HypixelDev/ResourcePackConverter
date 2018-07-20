@@ -18,7 +18,7 @@ import java.util.Map;
 public class BlockStateConverter extends Converter {
 
     @Override
-    public void rewrite(PackConverter main, Pack pack) throws IOException {
+    public void convert(PackConverter main, Pack pack) throws IOException {
         Path states = pack.getPath().resolve("assets\\minecraft\\blockstates");
         if (!states.toFile().exists()) return;
 

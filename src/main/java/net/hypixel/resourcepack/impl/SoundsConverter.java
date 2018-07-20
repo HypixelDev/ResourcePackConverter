@@ -18,7 +18,7 @@ import java.util.Map;
 public class SoundsConverter extends Converter {
 
     @Override
-    public void rewrite(PackConverter main, Pack pack) throws IOException {
+    public void convert(PackConverter main, Pack pack) throws IOException {
         Path soundsJsonPath = pack.getPath().resolve("assets/minecraft/sounds.json");
         if (!soundsJsonPath.toFile().exists()) return;
 

@@ -19,7 +19,7 @@ public class NameConverter extends Converter {
     protected final Mapping itemMapping = new ItemMapping();
 
     @Override
-    public void rewrite(PackConverter main, Pack pack) throws IOException {
+    public void convert(PackConverter main, Pack pack) throws IOException {
         Path models = pack.getPath().resolve("assets\\minecraft\\models");
         if (models.resolve("blocks").toFile().exists()) Files.move(models.resolve("blocks"), models.resolve("block"));
         renameAll(blockMapping, ".json", models.resolve("block"));

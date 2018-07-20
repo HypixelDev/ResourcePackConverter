@@ -15,7 +15,7 @@ import java.util.Collections;
 public class PackMetaConverter extends Converter {
 
     @Override
-    public void rewrite(PackConverter main, Pack pack) throws IOException {
+    public void convert(PackConverter main, Pack pack) throws IOException {
         Path file = pack.getPath().resolve("pack.mcmeta");
         if (!file.toFile().exists()) return;
 

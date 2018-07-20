@@ -17,7 +17,7 @@ import java.util.Map;
 public class ModelConverter extends Converter {
 
     @Override
-    public void rewrite(PackConverter main, Pack pack) throws IOException {
+    public void convert(PackConverter main, Pack pack) throws IOException {
         Path models = pack.getPath().resolve("assets\\minecraft\\models");
 
         remapModelJson(main, models.resolve("block"));

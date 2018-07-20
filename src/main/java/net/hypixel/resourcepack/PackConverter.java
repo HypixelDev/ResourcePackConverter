@@ -74,7 +74,7 @@ public class PackConverter {
 
                             for (Converter converter : converters.values()) {
                                 if (PackConverter.DEBUG) System.out.println("    Running " + converter.getClass().getSimpleName());
-                                converter.rewrite(this, pack);
+                                converter.convert(this, pack);
                             }
                         } catch (IOException e) {
                             System.err.println("Failed to convert!");

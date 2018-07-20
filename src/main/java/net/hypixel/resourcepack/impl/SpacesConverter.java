@@ -12,7 +12,7 @@ import java.nio.file.Path;
 public class SpacesConverter extends Converter {
 
     @Override
-    public void rewrite(PackConverter main, Pack pack) throws IOException {
+    public void convert(PackConverter main, Pack pack) throws IOException {
         Path assets = pack.getPath().resolve("assets");
         if (!assets.toFile().exists()) return;
 
