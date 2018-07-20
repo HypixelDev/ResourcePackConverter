@@ -23,10 +23,10 @@ public class BlockStateConverter extends Converter {
         if (!states.toFile().exists()) return;
 
         Files.list(states)
-                .filter(state -> state.toString().endsWith(".json"))
-                .forEach(state -> {
+                .filter(file -> file.toString().endsWith(".json"))
+                .forEach(file -> {
                     try {
-                        JsonObject json = Util.readJson(state);
+                        JsonObject json = Util.readJson(file);
 
                         boolean anyChanges = false;
                         JsonObject variantsObject = json.getAsJsonObject("variants");
@@ -63,9 +63,9 @@ public class BlockStateConverter extends Converter {
                         }
 
                         if (anyChanges) {
-                            Files.write(state, Collections.singleton(json.toString()), Charset.forName("UTF-8"));
+                            Files.write(file, Collections.singleton(json.toString()), Charset.forName("UTF-8"));
 
-                            if (PackConverter.DEBUG) System.out.println("      Converted " + state.getFileName());
+                            if (PackConverter.DEBUG) System.out.println("      Converted " + file.getFileName());
                         }
                     } catch (IOException e) {
                         Util.propagate(e);

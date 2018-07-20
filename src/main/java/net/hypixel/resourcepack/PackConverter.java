@@ -7,7 +7,7 @@ import net.hypixel.resourcepack.impl.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class PackConverter {
@@ -18,18 +18,22 @@ public class PackConverter {
     protected static final String CONVERTED_END = "_converted_1_13";
 
     protected final OptionSet optionSet;
-    protected final Map<Class<? extends Converter>, Converter> converters = new HashMap<>();
+    protected final Map<Class<? extends Converter>, Converter> converters = new LinkedHashMap<>();
 
     public PackConverter(OptionSet optionSet) {
         this.optionSet = optionSet;
 
+        // this needs to be run first, other converters might reference new directory names
         this.registerConverter(new NameConverter());
-        this.registerConverter(new ModelConverter());
+
         this.registerConverter(new PackMetaConverter());
+
+        this.registerConverter(new ModelConverter());
         this.registerConverter(new SpacesConverter());
         this.registerConverter(new SoundsConverter());
         this.registerConverter(new ParticleConverter());
         this.registerConverter(new BlockStateConverter());
+        this.registerConverter(new AnimationConverter());
     }
 
     public void registerConverter(Converter converter) {
