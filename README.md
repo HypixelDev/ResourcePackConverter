@@ -1,7 +1,12 @@
 # Resource Pack Converter
 
-Please note that this code worked for the packs we use (ranging from 1.8 to 1.12 versions), it might not convert everything; some things will need to be handled by hand, some items may have been mapped wrong, some things aren't possible anymore, etc.
-Feel free to open PRs with fixes and additions.
+This is our 1.8-1.12 -> 1.13 Resource pack converter. We used this to do most of the grunt work to convert Hypixel's various resource packs for the 1.13 update.
+
+We know that many use resource packs in nonstandard and quirky ways - but giving this a shot *may* reduce quite a bit of your pain and workload for the 1.13 conversion.
+
+Please note again that while this code worked for the packs we use (ranging from 1.8 to 1.12 versions), it might not convert everything perfectly;  You may need to fix some things by hand, some items may have been mapped wrong, some things are no longer possible in the newer version, etc. So please be sure to throughly test the results!
+
+Also if any other developers would like to open any PRs with fixes and additions please feel free.
 
 While this program will copy your resource packs before converting them, we still recommend backing them up, just in case!
 
@@ -15,4 +20,4 @@ You can set the input directory using one of the following parameters.
 
     java -jar ResourcePackConverter.jar --input input/
 
-
+We hope this helps out!
