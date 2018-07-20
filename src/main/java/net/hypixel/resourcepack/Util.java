@@ -3,6 +3,8 @@ package net.hypixel.resourcepack;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,6 +43,15 @@ public class Util {
             try (InputStreamReader streamReader = new InputStreamReader(stream)) {
                 return PackConverter.GSON.fromJson(streamReader, JsonObject.class);
             }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static BufferedImage readImageResource(String path) {
+        try (InputStream stream = PackConverter.class.getResourceAsStream(path)) {
+            if (stream == null) return null;
+            return ImageIO.read(stream);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

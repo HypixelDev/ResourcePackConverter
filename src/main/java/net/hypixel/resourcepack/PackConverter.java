@@ -34,6 +34,7 @@ public class PackConverter {
         this.registerConverter(new ParticleConverter());
         this.registerConverter(new BlockStateConverter());
         this.registerConverter(new AnimationConverter());
+        this.registerConverter(new MapIconConverter());
     }
 
     public void registerConverter(Converter converter) {
