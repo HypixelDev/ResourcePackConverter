@@ -1,6 +1,6 @@
 # Resource Pack Converter
 
-Please note that this code worked for the packs we use, it might not convert everything; some things will need to be handled by hand, some items may have been mapped wrong, etc.
+Please note that this code worked for the packs we use (ranging from 1.8 to 1.12 versions), it might not convert everything; some things will need to be handled by hand, some items may have been mapped wrong, some things aren't possible anymore, etc.
 Feel free to open PRs with fixes and additions.
 
 While this program will copy your resource packs before converting them, we still recommend backing them up, just in case!
