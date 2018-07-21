@@ -10,7 +10,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 
-public class Util {
+public final class Util {
+    
+    private Util() {
+        throw new UnsupportedOperationException("This class cannot be instantiated");
+    }
 
     public static void copyDir(Path src, Path dest) throws IOException {
         Files.walk(src).forEach(path -> {
