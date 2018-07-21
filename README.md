@@ -11,6 +11,7 @@ Also if any other developers would like to open any PRs with fixes and additions
 While this program will copy your resource packs before converting them, we still recommend backing them up, just in case!
 
 ## Usage
+Download the compiled jar file [here](https://github.com/HypixelDev/ResourcePackConverter/releases/), or compile the source yourself.
 The program will look for any valid resource packs in the current directory and is easily run by doing this.
 
     java -jar ResourcePackConverter.jar
