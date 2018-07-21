@@ -1,7 +1,7 @@
 package net.hypixel.resourcepack.impl;
 
 import net.hypixel.resourcepack.Converter;
-import net.hypixel.resourcepack.Pack;
+import net.hypixel.resourcepack.pack.Pack;
 import net.hypixel.resourcepack.PackConverter;
 import net.hypixel.resourcepack.Util;
 
@@ -13,7 +13,7 @@ public class SpacesConverter extends Converter {
 
     @Override
     public void convert(PackConverter main, Pack pack) throws IOException {
-        Path assets = pack.getPath().resolve("assets");
+        Path assets = pack.getWorkingPath().resolve("assets");
         if (!assets.toFile().exists()) return;
 
         Files.walk(assets).forEach(path -> {

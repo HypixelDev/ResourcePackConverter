@@ -1,7 +1,7 @@
 package net.hypixel.resourcepack.impl;
 
 import net.hypixel.resourcepack.Converter;
-import net.hypixel.resourcepack.Pack;
+import net.hypixel.resourcepack.pack.Pack;
 import net.hypixel.resourcepack.PackConverter;
 import net.hypixel.resourcepack.Util;
 
@@ -32,7 +32,7 @@ public class MapIconConverter extends Converter {
 
     @Override
     public void convert(PackConverter main, Pack pack) throws IOException {
-        Path imagePath = pack.getPath().resolve("assets/minecraft/textures/map/map_icons.png");
+        Path imagePath = pack.getWorkingPath().resolve("assets/minecraft/textures/map/map_icons.png");
         if (!imagePath.toFile().exists()) return;
 
         BufferedImage newImage = Util.readImageResource("/map_icons.png");

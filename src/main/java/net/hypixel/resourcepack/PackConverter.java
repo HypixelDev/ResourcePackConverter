@@ -3,19 +3,18 @@ package net.hypixel.resourcepack;
 import com.google.gson.Gson;
 import joptsimple.OptionSet;
 import net.hypixel.resourcepack.impl.*;
+import net.hypixel.resourcepack.pack.Pack;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class PackConverter {
 
     public static final Gson GSON = new Gson();
     public static final boolean DEBUG = true;
-
-    protected static final String CONVERTED_END = "_converted_1_13";
 
     protected final OptionSet optionSet;
     protected final Map<Class<? extends Converter>, Converter> converters = new LinkedHashMap<>();
@@ -46,47 +45,26 @@ public class PackConverter {
         return (T) converters.get(clazz);
     }
 
-    protected boolean isPack(Path path) {
-        // close enough
-        return path.toFile().isDirectory() &&
-                path.resolve("pack.mcmeta").toFile().exists() &&
-                !path.toString().endsWith(CONVERTED_END);
-    }
-
     public void run() throws IOException {
-        if (PackConverter.DEBUG) System.out.println(optionSet.asMap());
-
         Files.list(optionSet.valueOf(Options.INPUT_DIR))
-                // TODO Improvement: Support zip files?
-                .filter(this::isPack)
-                .forEach(path -> {
+                .map(Pack::parse)
+                .filter(Objects::nonNull)
+                .forEach(pack -> {
                     try {
-                        Path newPath = path.getParent().resolve(path.getFileName() + CONVERTED_END);
-                        Pack pack = new Pack(newPath);
-
                         System.out.println("Converting " + pack);
 
-                        if (newPath.toFile().exists()) {
-                            System.out.println("  Deleting existing conversion");
-                            Util.deleteDirectoryAndContents(newPath);
+                        pack.getHandler().setup();
+
+                        System.out.println("  Running Converters");
+                        for (Converter converter : converters.values()) {
+                            if (PackConverter.DEBUG) System.out.println("    Running " + converter.getClass().getSimpleName());
+                            converter.convert(this, pack);
                         }
 
-                        System.out.println("  Copying existing pack");
-                        Util.copyDir(path, newPath);
-
-                        try {
-                            System.out.println("  Running Converters");
-
-                            for (Converter converter : converters.values()) {
-                                if (PackConverter.DEBUG) System.out.println("    Running " + converter.getClass().getSimpleName());
-                                converter.convert(this, pack);
-                            }
-                        } catch (IOException e) {
-                            System.err.println("Failed to convert!");
-                            e.printStackTrace();
-                        }
-                    } catch (IOException e) {
-                        Util.propagate(e);
+                        pack.getHandler().finish();
+                    } catch (Throwable t) {
+                        System.err.println("Failed to convert!");
+                        Util.propagate(t);
                     }
                 });
     }

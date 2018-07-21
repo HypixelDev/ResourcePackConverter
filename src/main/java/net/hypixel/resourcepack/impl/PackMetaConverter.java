@@ -2,7 +2,7 @@ package net.hypixel.resourcepack.impl;
 
 import com.google.gson.JsonObject;
 import net.hypixel.resourcepack.Converter;
-import net.hypixel.resourcepack.Pack;
+import net.hypixel.resourcepack.pack.Pack;
 import net.hypixel.resourcepack.PackConverter;
 import net.hypixel.resourcepack.Util;
 
@@ -16,7 +16,7 @@ public class PackMetaConverter extends Converter {
 
     @Override
     public void convert(PackConverter main, Pack pack) throws IOException {
-        Path file = pack.getPath().resolve("pack.mcmeta");
+        Path file = pack.getWorkingPath().resolve("pack.mcmeta");
         if (!file.toFile().exists()) return;
 
         JsonObject json = Util.readJson(file);

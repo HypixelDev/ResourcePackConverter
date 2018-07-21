@@ -1,7 +1,7 @@
 package net.hypixel.resourcepack.impl;
 
 import net.hypixel.resourcepack.Converter;
-import net.hypixel.resourcepack.Pack;
+import net.hypixel.resourcepack.pack.Pack;
 import net.hypixel.resourcepack.PackConverter;
 
 import javax.imageio.ImageIO;
@@ -14,7 +14,7 @@ public class ParticleConverter extends Converter {
 
     @Override
     public void convert(PackConverter main, Pack pack) throws IOException {
-        Path imagePath = pack.getPath().resolve("assets/minecraft/textures/particle/particles.png");
+        Path imagePath = pack.getWorkingPath().resolve("assets/minecraft/textures/particle/particles.png");
         if (!imagePath.toFile().exists()) return;
 
         BufferedImage image = ImageIO.read(imagePath.toFile());

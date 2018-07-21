@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.hypixel.resourcepack.Converter;
-import net.hypixel.resourcepack.Pack;
+import net.hypixel.resourcepack.pack.Pack;
 import net.hypixel.resourcepack.PackConverter;
 import net.hypixel.resourcepack.Util;
 
@@ -19,7 +19,7 @@ public class BlockStateConverter extends Converter {
 
     @Override
     public void convert(PackConverter main, Pack pack) throws IOException {
-        Path states = pack.getPath().resolve("assets\\minecraft\\blockstates");
+        Path states = pack.getWorkingPath().resolve("assets\\minecraft\\blockstates");
         if (!states.toFile().exists()) return;
 
         Files.list(states)
