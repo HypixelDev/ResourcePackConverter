@@ -3,10 +3,11 @@ package net.hypixel.resourcepack.impl;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.hypixel.resourcepack.Converter;
-import net.hypixel.resourcepack.pack.Pack;
 import net.hypixel.resourcepack.PackConverter;
 import net.hypixel.resourcepack.Util;
+import net.hypixel.resourcepack.pack.Pack;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,16 +21,16 @@ public class NameConverter extends Converter {
 
     @Override
     public void convert(PackConverter main, Pack pack) throws IOException {
-        Path models = pack.getWorkingPath().resolve("assets\\minecraft\\models");
+        Path models = pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" + File.separator + "models");
         if (models.resolve("blocks").toFile().exists()) Files.move(models.resolve("blocks"), models.resolve("block"));
         renameAll(blockMapping, ".json", models.resolve("block"));
         if (models.resolve("items").toFile().exists()) Files.move(models.resolve("items"), models.resolve("item"));
         renameAll(itemMapping, ".json", models.resolve("item"));
 
-        Path blockStates = pack.getWorkingPath().resolve("assets\\minecraft\\blockstates");
+        Path blockStates = pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" + File.separator + "blockstates");
         renameAll(itemMapping, ".json", blockStates);
 
-        Path textures = pack.getWorkingPath().resolve("assets\\minecraft\\textures");
+        Path textures = pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" + File.separator + "textures");
         if (textures.resolve("blocks").toFile().exists()) Files.move(textures.resolve("blocks"), textures.resolve("block"));
         renameAll(blockMapping, ".png", textures.resolve("block"));
         renameAll(blockMapping, ".png.mcmeta", textures.resolve("block"));

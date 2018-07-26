@@ -3,10 +3,11 @@ package net.hypixel.resourcepack.impl;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.hypixel.resourcepack.Converter;
-import net.hypixel.resourcepack.pack.Pack;
 import net.hypixel.resourcepack.PackConverter;
 import net.hypixel.resourcepack.Util;
+import net.hypixel.resourcepack.pack.Pack;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -18,7 +19,7 @@ public class ModelConverter extends Converter {
 
     @Override
     public void convert(PackConverter main, Pack pack) throws IOException {
-        Path models = pack.getWorkingPath().resolve("assets\\minecraft\\models");
+        Path models = pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" + File.separator + "models");
 
         remapModelJson(main, models.resolve("block"));
         remapModelJson(main, models.resolve("item"));

@@ -4,10 +4,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.hypixel.resourcepack.Converter;
-import net.hypixel.resourcepack.pack.Pack;
 import net.hypixel.resourcepack.PackConverter;
 import net.hypixel.resourcepack.Util;
+import net.hypixel.resourcepack.pack.Pack;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -19,7 +20,7 @@ public class SoundsConverter extends Converter {
 
     @Override
     public void convert(PackConverter main, Pack pack) throws IOException {
-        Path soundsJsonPath = pack.getWorkingPath().resolve("assets/minecraft/sounds.json");
+        Path soundsJsonPath = pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" + File.separator + "sounds.json");
         if (!soundsJsonPath.toFile().exists()) return;
 
         JsonObject sounds = Util.readJson(soundsJsonPath);
@@ -35,7 +36,7 @@ public class SoundsConverter extends Converter {
                     for (JsonElement jsonElement : soundsArray) {
                         String sound;
 
-                        Path baseSoundsPath = pack.getWorkingPath().resolve("assets/minecraft/sounds/");
+                        Path baseSoundsPath = pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" + File.separator + "sounds");
                         Path path = baseSoundsPath.resolve(jsonElement.getAsString() + ".ogg");
                         if (!Util.fileExistsCorrectCasing(path)) {
                             String rewrite = path.toFile().getCanonicalPath().substring(baseSoundsPath.toString().length() + 1, path.toFile().getCanonicalPath().length() - 4);
