@@ -6,6 +6,12 @@ import java.io.IOException;
 
 public abstract class Converter {
 
-    public abstract void convert(PackConverter main, Pack pack) throws IOException;
+    protected PackConverter packConverter;
+
+    public Converter(PackConverter packConverter) {
+        this.packConverter = packConverter;
+    }
+
+    public abstract void convert(Pack pack) throws IOException;
 
 }

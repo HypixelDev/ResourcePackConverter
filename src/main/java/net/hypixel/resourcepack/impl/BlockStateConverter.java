@@ -18,8 +18,12 @@ import java.util.Map;
 
 public class BlockStateConverter extends Converter {
 
+    public BlockStateConverter(PackConverter packConverter) {
+        super(packConverter);
+    }
+
     @Override
-    public void convert(PackConverter main, Pack pack) throws IOException {
+    public void convert(Pack pack) throws IOException {
         Path states = pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" + File.separator + "blockstates");
         if (!states.toFile().exists()) return;
 
@@ -27,7 +31,7 @@ public class BlockStateConverter extends Converter {
                 .filter(file -> file.toString().endsWith(".json"))
                 .forEach(file -> {
                     try {
-                        JsonObject json = Util.readJson(file);
+                        JsonObject json = Util.readJson(packConverter.getGson(), file);
 
                         boolean anyChanges = false;
                         JsonObject variantsObject = json.getAsJsonObject("variants");
@@ -64,7 +68,7 @@ public class BlockStateConverter extends Converter {
                         }
 
                         if (anyChanges) {
-                            Files.write(file, Collections.singleton(json.toString()), Charset.forName("UTF-8"));
+                            Files.write(file, Collections.singleton(packConverter.getGson().toJson(json)), Charset.forName("UTF-8"));
 
                             if (PackConverter.DEBUG) System.out.println("      Converted " + file.getFileName());
                         }

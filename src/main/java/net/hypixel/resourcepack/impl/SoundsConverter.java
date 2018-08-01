@@ -18,12 +18,16 @@ import java.util.Map;
 
 public class SoundsConverter extends Converter {
 
+    public SoundsConverter(PackConverter packConverter) {
+        super(packConverter);
+    }
+
     @Override
-    public void convert(PackConverter main, Pack pack) throws IOException {
+    public void convert(Pack pack) throws IOException {
         Path soundsJsonPath = pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" + File.separator + "sounds.json");
         if (!soundsJsonPath.toFile().exists()) return;
 
-        JsonObject sounds = Util.readJson(soundsJsonPath);
+        JsonObject sounds = Util.readJson(packConverter.getGson(), soundsJsonPath);
         JsonObject newSoundsObject = new JsonObject();
 
         for (Map.Entry<String, JsonElement> entry : sounds.entrySet()) {
@@ -57,7 +61,7 @@ public class SoundsConverter extends Converter {
             }
         }
 
-        Files.write(soundsJsonPath, Collections.singleton(newSoundsObject.toString()), Charset.forName("UTF-8"));
+        Files.write(soundsJsonPath, Collections.singleton(packConverter.getGson().toJson(newSoundsObject)), Charset.forName("UTF-8"));
     }
 
 }

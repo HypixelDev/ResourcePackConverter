@@ -1,6 +1,7 @@
 package net.hypixel.resourcepack;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import joptsimple.OptionSet;
 import net.hypixel.resourcepack.impl.*;
 import net.hypixel.resourcepack.pack.Pack;
@@ -13,27 +14,32 @@ import java.util.Objects;
 
 public class PackConverter {
 
-    public static final Gson GSON = new Gson();
     public static final boolean DEBUG = true;
 
     protected final OptionSet optionSet;
+    protected final Gson gson;
+
     protected final Map<Class<? extends Converter>, Converter> converters = new LinkedHashMap<>();
 
     public PackConverter(OptionSet optionSet) {
         this.optionSet = optionSet;
 
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        if (!this.optionSet.has(Options.MINIFY)) gsonBuilder.setPrettyPrinting();
+        this.gson = gsonBuilder.create();
+
         // this needs to be run first, other converters might reference new directory names
-        this.registerConverter(new NameConverter());
+        this.registerConverter(new NameConverter(this));
 
-        this.registerConverter(new PackMetaConverter());
+        this.registerConverter(new PackMetaConverter(this));
 
-        this.registerConverter(new ModelConverter());
-        this.registerConverter(new SpacesConverter());
-        this.registerConverter(new SoundsConverter());
-        this.registerConverter(new ParticleConverter());
-        this.registerConverter(new BlockStateConverter());
-        this.registerConverter(new AnimationConverter());
-        this.registerConverter(new MapIconConverter());
+        this.registerConverter(new ModelConverter(this));
+        this.registerConverter(new SpacesConverter(this));
+        this.registerConverter(new SoundsConverter(this));
+        this.registerConverter(new ParticleConverter(this));
+        this.registerConverter(new BlockStateConverter(this));
+        this.registerConverter(new AnimationConverter(this));
+        this.registerConverter(new MapIconConverter(this));
     }
 
     public void registerConverter(Converter converter) {
@@ -58,7 +64,7 @@ public class PackConverter {
                         System.out.println("  Running Converters");
                         for (Converter converter : converters.values()) {
                             if (PackConverter.DEBUG) System.out.println("    Running " + converter.getClass().getSimpleName());
-                            converter.convert(this, pack);
+                            converter.convert(pack);
                         }
 
                         pack.getHandler().finish();
@@ -67,6 +73,10 @@ public class PackConverter {
                         Util.propagate(t);
                     }
                 });
+    }
+
+    public Gson getGson() {
+        return gson;
     }
 
     @Override

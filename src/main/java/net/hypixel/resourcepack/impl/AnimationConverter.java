@@ -16,8 +16,12 @@ import java.util.Collections;
 
 public class AnimationConverter extends Converter {
 
+    public AnimationConverter(PackConverter packConverter) {
+        super(packConverter);
+    }
+
     @Override
-    public void convert(PackConverter main, Pack pack) throws IOException {
+    public void convert(Pack pack) throws IOException {
         fixAnimations(pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" + File.separator + "textures" + File.separator + "block"));
         fixAnimations(pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" + File.separator + "textures" + File.separator + "item"));
     }
@@ -29,7 +33,7 @@ public class AnimationConverter extends Converter {
                 .filter(file -> file.toString().endsWith(".png.mcmeta"))
                 .forEach(file -> {
                     try {
-                        JsonObject json = Util.readJson(file);
+                        JsonObject json = Util.readJson(packConverter.getGson(), file);
 
                         boolean anyChanges = false;
                         JsonElement animationElement = json.get("animation");
@@ -44,7 +48,7 @@ public class AnimationConverter extends Converter {
                         }
 
                         if (anyChanges) {
-                            Files.write(file, Collections.singleton(json.toString()), Charset.forName("UTF-8"));
+                            Files.write(file, Collections.singleton(packConverter.getGson().toJson(json)), Charset.forName("UTF-8"));
 
                             if (PackConverter.DEBUG) System.out.println("      Converted " + file.getFileName());
                         }

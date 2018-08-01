@@ -17,22 +17,26 @@ import java.util.Map;
 
 public class ModelConverter extends Converter {
 
-    @Override
-    public void convert(PackConverter main, Pack pack) throws IOException {
-        Path models = pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" + File.separator + "models");
-
-        remapModelJson(main, models.resolve("block"));
-        remapModelJson(main, models.resolve("item"));
+    public ModelConverter(PackConverter packConverter) {
+        super(packConverter);
     }
 
-    protected void remapModelJson(PackConverter main, Path path) throws IOException {
+    @Override
+    public void convert(Pack pack) throws IOException {
+        Path models = pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" + File.separator + "models");
+
+        remapModelJson(models.resolve("block"));
+        remapModelJson(models.resolve("item"));
+    }
+
+    protected void remapModelJson(Path path) throws IOException {
         if (!path.toFile().exists()) return;
 
         Files.list(path)
                 .filter(path1 -> path1.toString().endsWith(".json"))
                 .forEach(model -> {
                     try {
-                        JsonObject jsonObject = Util.readJson(model);
+                        JsonObject jsonObject = Util.readJson(packConverter.getGson(), model);
 
                         // minify the json so we can replace spaces in paths easily
                         // TODO Improvement: handle this in a cleaner way?
@@ -44,9 +48,9 @@ public class ModelConverter extends Converter {
                         Files.write(model, Collections.singleton(content), Charset.forName("UTF-8"));
 
                         // handle the remapping of textures, for models that use default texture names
-                        jsonObject = Util.readJson(model);
+                        jsonObject = Util.readJson(packConverter.getGson(), model);
                         if (jsonObject.has("textures")) {
-                            NameConverter nameConverter = main.getConverter(NameConverter.class);
+                            NameConverter nameConverter = packConverter.getConverter(NameConverter.class);
 
                             JsonObject textureObject = jsonObject.getAsJsonObject("textures");
                             for (Map.Entry<String, JsonElement> entry : textureObject.entrySet()) {
@@ -59,7 +63,7 @@ public class ModelConverter extends Converter {
                             }
                         }
 
-                        Files.write(model, Collections.singleton(jsonObject.toString()), Charset.forName("UTF-8"));
+                        Files.write(model, Collections.singleton(packConverter.getGson().toJson(jsonObject)), Charset.forName("UTF-8"));
                     } catch (IOException e) {
                         throw Util.propagate(e);
                     }

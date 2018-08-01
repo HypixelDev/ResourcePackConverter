@@ -18,7 +18,9 @@ public class MapIconConverter extends Converter {
 
     protected Map<Long, Long> mapping = new HashMap<>();
 
-    public MapIconConverter() {
+    public MapIconConverter(PackConverter packConverter) {
+        super(packConverter);
+
         mapping.put(pack(0, 0), pack(0, 0));
         mapping.put(pack(8, 0), pack(8, 0));
         mapping.put(pack(16, 0), pack(16, 0));
@@ -32,7 +34,7 @@ public class MapIconConverter extends Converter {
     }
 
     @Override
-    public void convert(PackConverter main, Pack pack) throws IOException {
+    public void convert(Pack pack) throws IOException {
         Path imagePath = pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" + File.separator + "textures" + File.separator + "map" + File.separator + "map_icons.png");
         if (!imagePath.toFile().exists()) return;
 

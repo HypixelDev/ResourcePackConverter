@@ -19,8 +19,12 @@ public class NameConverter extends Converter {
     protected final Mapping blockMapping = new BlockMapping();
     protected final Mapping itemMapping = new ItemMapping();
 
+    public NameConverter(PackConverter packConverter) {
+        super(packConverter);
+    }
+
     @Override
-    public void convert(PackConverter main, Pack pack) throws IOException {
+    public void convert(Pack pack) throws IOException {
         Path models = pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" + File.separator + "models");
         if (models.resolve("blocks").toFile().exists()) Files.move(models.resolve("blocks"), models.resolve("block"));
         renameAll(blockMapping, ".json", models.resolve("block"));
@@ -86,11 +90,11 @@ public class NameConverter extends Converter {
 
     }
 
-    protected static class BlockMapping extends Mapping {
+    protected class BlockMapping extends Mapping {
 
         @Override
         protected void load() {
-            JsonObject blocks = Util.readJsonResource("/blocks.json");
+            JsonObject blocks = Util.readJsonResource(packConverter.getGson(), "/blocks.json");
             if (blocks != null) {
                 for (Map.Entry<String, JsonElement> entry : blocks.entrySet()) {
                     this.mapping.put(entry.getKey(), entry.getValue().getAsString());
@@ -100,11 +104,11 @@ public class NameConverter extends Converter {
 
     }
 
-    protected static class ItemMapping extends Mapping {
+    protected class ItemMapping extends Mapping {
 
         @Override
         protected void load() {
-            JsonObject items = Util.readJsonResource("/items.json");
+            JsonObject items = Util.readJsonResource(packConverter.getGson(), "/items.json");
             if (items != null) {
                 for (Map.Entry<String, JsonElement> entry : items.entrySet()) {
                     this.mapping.put(entry.getKey(), entry.getValue().getAsString());

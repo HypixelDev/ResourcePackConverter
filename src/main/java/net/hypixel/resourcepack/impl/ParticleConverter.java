@@ -13,8 +13,12 @@ import java.nio.file.Path;
 
 public class ParticleConverter extends Converter {
 
+    public ParticleConverter(PackConverter packConverter) {
+        super(packConverter);
+    }
+
     @Override
-    public void convert(PackConverter main, Pack pack) throws IOException {
+    public void convert(Pack pack) throws IOException {
         Path imagePath = pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" + File.separator + "textures" + File.separator + "particle" + File.separator + "particles.png");
         if (!imagePath.toFile().exists()) return;
 

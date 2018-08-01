@@ -1,5 +1,6 @@
 package net.hypixel.resourcepack;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 
@@ -11,7 +12,7 @@ import java.nio.file.Path;
 import java.util.Comparator;
 
 public final class Util {
-    
+
     private Util() {
         throw new UnsupportedOperationException("This class cannot be instantiated");
     }
@@ -41,11 +42,11 @@ public final class Util {
         return path.toString().equals(path.toFile().getCanonicalPath());
     }
 
-    public static JsonObject readJsonResource(String path) {
+    public static JsonObject readJsonResource(Gson gson, String path) {
         try (InputStream stream = PackConverter.class.getResourceAsStream(path)) {
             if (stream == null) return null;
             try (InputStreamReader streamReader = new InputStreamReader(stream)) {
-                return PackConverter.GSON.fromJson(streamReader, JsonObject.class);
+                return gson.fromJson(streamReader, JsonObject.class);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -61,13 +62,13 @@ public final class Util {
         }
     }
 
-    public static JsonObject readJson(Path path) throws IOException {
-        return Util.readJson(path, JsonObject.class);
+    public static JsonObject readJson(Gson gson, Path path) throws IOException {
+        return Util.readJson(gson, path, JsonObject.class);
     }
 
-    public static <T> T readJson(Path path, Class<T> clazz) throws IOException {
+    public static <T> T readJson(Gson gson, Path path, Class<T> clazz) throws IOException {
         // TODO Improvement: this will fail if there is a BOM in the file
-        return PackConverter.GSON.fromJson(new JsonReader(new FileReader(path.toFile())), clazz);
+        return gson.fromJson(new JsonReader(new FileReader(path.toFile())), clazz);
     }
 
     /**
