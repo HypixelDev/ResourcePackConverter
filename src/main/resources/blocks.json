@@ -306,8 +306,11 @@
   "carpet_pink": "pink_carpet",
   "carpet_purple": "purple_carpet",
   "carpet_red": "red_carpet",
-  "carpet_silver": "silver_carpet",
+  "carpet_silver": "light_gray_carpet",
+  "silver_carpet": "light_gray_carpet",
   "carpet_white": "white_carpet",
   "carpet_yellow": "yellow_carpet",
-  "carpet_gray": "gray_carpet"
+  "carpet_gray": "gray_carpet",
+  "wooden_pressure_plate": "oak_pressure_plate",
+  "wood_pressure_plate": "oak_pressure_plate"
 }
