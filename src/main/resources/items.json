@@ -104,5 +104,7 @@
   "wood_pickaxe": "wooden_pickaxe",
   "wood_shovel": "wooden_shovel",
   "wood_sword": "wooden_sword",
-  "wooden_armorstand": "armor_stand"
+  "wooden_armorstand": "armor_stand",
+  "wooden_pressure_plate": "oak_pressure_plate",
+  "wood_pressure_plate": "oak_pressure_plate"
 }
