@@ -3,6 +3,7 @@ package net.hypixel.resourcepack.impl;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import net.hypixel.resourcepack.Converter;
 import net.hypixel.resourcepack.PackConverter;
 import net.hypixel.resourcepack.Util;
@@ -40,8 +41,16 @@ public class SoundsConverter extends Converter {
                     for (JsonElement jsonElement : soundsArray) {
                         String sound;
 
+                        if (jsonElement instanceof JsonObject) {
+                            sound = ((JsonObject) jsonElement).get("name").getAsString();
+                        } else if (jsonElement instanceof JsonPrimitive) {
+                            sound = jsonElement.getAsString();
+                        } else {
+                            throw new IllegalArgumentException("Unknown element type: " + jsonElement.getClass().getSimpleName());
+                        }
+
                         Path baseSoundsPath = pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" + File.separator + "sounds");
-                        Path path = baseSoundsPath.resolve(jsonElement.getAsString() + ".ogg");
+                        Path path = baseSoundsPath.resolve(sound + ".ogg");
                         if (!Util.fileExistsCorrectCasing(path)) {
                             String rewrite = path.toFile().getCanonicalPath().substring(baseSoundsPath.toString().length() + 1, path.toFile().getCanonicalPath().length() - 4);
                             if (PackConverter.DEBUG) System.out.println("      Rewriting Sound: '" + jsonElement.getAsString() + "' -> '" + rewrite + "'");
@@ -52,7 +61,16 @@ public class SoundsConverter extends Converter {
 
                         // windows fix
                         sound = sound.replaceAll("\\\\", "/");
-                        newSoundsArray.add(sound);
+
+                        JsonElement newSound = null;
+                        if (jsonElement instanceof JsonObject) {
+                            ((JsonObject) jsonElement).addProperty("name", sound);
+                            newSound = jsonElement;
+                        } else if (jsonElement instanceof JsonPrimitive) {
+                            newSound = new JsonPrimitive(jsonElement.getAsString());
+                        }
+
+                        newSoundsArray.add(newSound);
                     }
                     soundObject.add("sounds", newSoundsArray);
                 }
