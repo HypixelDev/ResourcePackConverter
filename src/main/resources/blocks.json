@@ -329,5 +329,6 @@
   "carpet_gray": "gray_carpet",
   "wooden_pressure_plate": "oak_pressure_plate",
   "wood_pressure_plate": "oak_pressure_plate",
-  "trapdoor": "oak_trapdoor"
+  "trapdoor": "oak_trapdoor",
+  "hopper_down": "hopper"
 }
