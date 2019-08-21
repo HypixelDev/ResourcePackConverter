@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Map;
 
@@ -23,13 +24,25 @@ public class ModelConverter extends Converter {
 
     @Override
     public void convert(Pack pack) throws IOException {
-        Path models = pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" + File.separator + "models");
-
-        remapModelJson(models.resolve("block"));
-        remapModelJson(models.resolve("item"));
+        Path models = pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" +File.separator + "models");
+        findFiles(models);
+        //remapModelJson(models.resolve("item"));
+        //remapModelJson(models.resolve("block"));
     }
 
+    protected void findFiles(Path path) throws IOException {
+        File directory = new File(path.toString());
+        File[] fList = directory.listFiles();
+        for (File file : fList) {
+            if (file.isDirectory()) {
+                remapModelJson(Paths.get(file.getPath()));
+                findFiles(Paths.get(file.getPath()));
+
+            }
+        }
+    }
     protected void remapModelJson(Path path) throws IOException {
+
         if (!path.toFile().exists()) return;
 
         Files.list(path)
