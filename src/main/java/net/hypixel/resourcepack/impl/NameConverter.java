@@ -50,6 +50,7 @@ public class NameConverter extends Converter {
     }
     // Added to find files in the entity folder
     protected void findEntityFiles(Path path) throws IOException {
+        if (path.toFile().exists()) {
         File directory = new File(path.toString());
         File[] fList = directory.listFiles();
         for (File file : fList) {
@@ -58,6 +59,7 @@ public class NameConverter extends Converter {
                 renameAll(entityMapping, ".png.mcmeta", Paths.get(file.getPath()));
                 findEntityFiles(Paths.get(file.getPath()));
 
+            }
             }
         }
     }
