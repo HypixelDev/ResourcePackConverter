@@ -91,9 +91,6 @@ public class NameConverter extends Converter {
     public Mapping getItemMapping() {
         return itemMapping;
     }
-    public Mapping getEntityMapping() {
-        return entityMapping;
-    }
 
     protected abstract static class Mapping {
 
@@ -142,6 +139,7 @@ public class NameConverter extends Converter {
         }
 
     }
+
 
     protected class ItemMapping extends Mapping {
 
