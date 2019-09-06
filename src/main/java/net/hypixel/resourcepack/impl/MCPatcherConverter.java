@@ -53,14 +53,19 @@ public class MCPatcherConverter extends Converter {
 
                         try(OutputStream output = new FileOutputStream( model.toString())) {
                             //updates textures
-                            //if (prop.containsKey("texture")) {
-                            //    prop.setProperty("texture", replaceTextures(prop));
-                            //}
+                            if (prop.containsKey("texture")) {
+                                prop.setProperty("texture", replaceTextures(prop));
+                            }
                             //Updates Item IDs
                             if (prop.containsKey("matchItems")) {
                                 prop.setProperty("matchItems", updateID("matchItems", prop).replaceAll("\"", ""));
 
                             }
+                            if (prop.containsKey("matchBlocks")) {
+                                prop.setProperty("matchBlocks", updateID("matchBlocks", prop).replaceAll("\"", ""));
+
+                            }
+
 
 
                             //Saves File
@@ -100,22 +105,40 @@ public class MCPatcherConverter extends Converter {
             if (prop.getProperty(type).contains(" ")) {
                 String[] split = prop.getProperty(type).split(" ");
                 for (int i = 0; i < split.length; i++) {
-                    if (split[i] == id2.getKey()) {
+                        if (prop.containsKey("metadata")) {
+                            if ((split[i] + ":" + prop.getProperty("metadata")).equals(id2.getKey())) {
+                                properties2 = properties2 + " " + id2.getValue().getAsString();
+                                System.out.println("renamed " + prop.getProperty(type) + " to " + properties2);
+                            }
+                        }
+
+                    else if ((split[i]).equals(id2.getKey())) {
                         properties2 = properties2 + " " + id2.getValue().getAsString();
                         System.out.println("renamed " + prop.getProperty(type) + " to " + properties2);
                     }
 
                 }
+
+
             } else {
 
                 if (prop.getProperty(type).equals(id2.getKey())) {
-                    properties2 = id2.getValue().getAsString();
-                    System.out.println("renamed " + prop.getProperty(type) + " to " + id2.getValue());
+                    String value = new String();
+                        if (prop.containsKey("metadata")) {
+                            value = id2.getValue().getAsString() + ":" + prop.getProperty("metadata");
+
+                        } else {
+                            value = id2.getValue().getAsString();
+                        }
+
+                    properties2 = value;
+                    System.out.println("renamed " + prop.getProperty(type) + " to " + value);
                     return properties2;
                 }
             }
 
             }
+        if(prop.containsKey("metadata")) prop.remove("metadata");
         if (properties2 != "") {
             return properties2;
 
