@@ -20,5 +20,10 @@ You can set the input directory using one of the following parameters.
 `-i <path>`, `--input <path>` or `--input-dir <path>`.
 
     java -jar ResourcePackConverter.jar --input input/
+	
+You can also convert to 1.15 using this addon.
+`--1.15`.
+
+	java -jar ResourcePackConverter.jar --1.15
 
 We hope this helps out!

@@ -19,6 +19,8 @@ public class Options {
             .withValuesConvertedBy(new PathConverter())
             .defaultsTo(Paths.get("./"));
 
+    public static final OptionSpec<Void> ONEFIFTEEN = PARSER.accepts("1.15", "Updates to 1.15 version");
+
     public static final OptionSpec<Void> MINIFY = PARSER.accepts("minify", "Minify the json files.");
 
     public static class PathConverter implements ValueConverter<Path> {

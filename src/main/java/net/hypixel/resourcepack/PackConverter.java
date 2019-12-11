@@ -30,8 +30,8 @@ public class PackConverter {
 
         // this needs to be run first, other converters might reference new directory names
         this.registerConverter(new NameConverter(this));
-
-        this.registerConverter(new PackMetaConverter(this));
+        if (this.optionSet.has(Options.ONEFIFTEEN)) this.registerConverter(new PackMetaConverter(this, "1.15"));
+        else this.registerConverter(new PackMetaConverter(this, "1.13"));
 
         this.registerConverter(new ModelConverter(this));
         this.registerConverter(new SpacesConverter(this));
