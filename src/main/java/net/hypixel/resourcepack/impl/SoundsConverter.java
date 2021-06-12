@@ -12,6 +12,7 @@ import net.hypixel.resourcepack.pack.Pack;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -25,61 +26,67 @@ public class SoundsConverter extends Converter {
 
     @Override
     public void convert(Pack pack) throws IOException {
-        Path soundsJsonPath = pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" + File.separator + "sounds.json");
-        if (!soundsJsonPath.toFile().exists()) return;
+        Path soundsJsonPath = pack.getMinecraftPath().resolve("sounds.json");
+        if (Files.exists(soundsJsonPath)) {
 
-        JsonObject sounds = Util.readJson(packConverter.getGson(), soundsJsonPath);
-        JsonObject newSoundsObject = new JsonObject();
 
-        for (Map.Entry<String, JsonElement> entry : sounds.entrySet()) {
-            if (entry.getValue().isJsonObject()) {
-                JsonObject soundObject = entry.getValue().getAsJsonObject();
-                if (soundObject.has("sounds") && soundObject.get("sounds").isJsonArray()) {
-                    JsonArray soundsArray = soundObject.getAsJsonArray("sounds");
+            JsonObject sounds = Util.readJson(packConverter.getGson(), soundsJsonPath);
+            JsonObject newSoundsObject = new JsonObject();
 
-                    JsonArray newSoundsArray = new JsonArray();
-                    for (JsonElement jsonElement : soundsArray) {
-                        String sound;
+            for (Map.Entry<String, JsonElement> entry : sounds.entrySet()) {
+                JsonElement value = entry.getValue();
+                if (value.isJsonObject()) {
+                    JsonObject soundObject = value.getAsJsonObject();
+                    if (soundObject.has("sounds") && soundObject.get("sounds").isJsonArray()) {
+                        JsonArray soundsArray = soundObject.getAsJsonArray("sounds");
 
-                        if (jsonElement instanceof JsonObject) {
-                            sound = ((JsonObject) jsonElement).get("name").getAsString();
-                        } else if (jsonElement instanceof JsonPrimitive) {
-                            sound = jsonElement.getAsString();
-                        } else {
-                            throw new IllegalArgumentException("Unknown element type: " + jsonElement.getClass().getSimpleName());
+                        JsonArray newSoundsArray = new JsonArray();
+                        for (JsonElement jsonElement : soundsArray) {
+                            String sound;
+
+                            if (jsonElement instanceof JsonObject) {
+                                sound = ((JsonObject) jsonElement).get("name").getAsString();
+                            } else if (jsonElement instanceof JsonPrimitive) {
+                                sound = jsonElement.getAsString();
+                            } else {
+                                throw new IllegalArgumentException("Unknown element type: " + jsonElement.getClass().getSimpleName());
+                            }
+
+                            Path baseSoundsPath = pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" + File.separator + "sounds");
+                            Path path = baseSoundsPath.resolve(sound + ".ogg");
+                            if (!Util.fileExistsCorrectCasing(path)) {
+                                String rewrite = path.toFile().getCanonicalPath().substring(baseSoundsPath.toString().length() + 1, path.toFile().getCanonicalPath().length() - 4);
+                                if (PackConverter.DEBUG)
+                                    System.out.println("      Rewriting Sound: '" + jsonElement.getAsString() + "' -> '" + rewrite + "'");
+                                sound = rewrite;
+                            } else {
+                                sound = jsonElement.getAsString();
+                            }
+
+                            // windows fix
+                            sound = sound.replaceAll("\\\\", "/");
+
+                            JsonElement newSound = null;
+                            if (jsonElement instanceof JsonObject) {
+                                ((JsonObject) jsonElement).addProperty("name", sound);
+                                newSound = jsonElement;
+                            } else if (jsonElement instanceof JsonPrimitive) {
+                                newSound = new JsonPrimitive(jsonElement.getAsString());
+                            }
+
+                            newSoundsArray.add(newSound);
                         }
-
-                        Path baseSoundsPath = pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" + File.separator + "sounds");
-                        Path path = baseSoundsPath.resolve(sound + ".ogg");
-                        if (!Util.fileExistsCorrectCasing(path)) {
-                            String rewrite = path.toFile().getCanonicalPath().substring(baseSoundsPath.toString().length() + 1, path.toFile().getCanonicalPath().length() - 4);
-                            if (PackConverter.DEBUG) System.out.println("      Rewriting Sound: '" + jsonElement.getAsString() + "' -> '" + rewrite + "'");
-                            sound = rewrite;
-                        } else {
-                            sound = jsonElement.getAsString();
-                        }
-
-                        // windows fix
-                        sound = sound.replaceAll("\\\\", "/");
-
-                        JsonElement newSound = null;
-                        if (jsonElement instanceof JsonObject) {
-                            ((JsonObject) jsonElement).addProperty("name", sound);
-                            newSound = jsonElement;
-                        } else if (jsonElement instanceof JsonPrimitive) {
-                            newSound = new JsonPrimitive(jsonElement.getAsString());
-                        }
-
-                        newSoundsArray.add(newSound);
+                        soundObject.add("sounds", newSoundsArray);
                     }
-                    soundObject.add("sounds", newSoundsArray);
+
+                    newSoundsObject.add(entry.getKey().toLowerCase(), soundObject);
                 }
-
-                newSoundsObject.add(entry.getKey().toLowerCase(), soundObject);
             }
+            Files.write(soundsJsonPath, packConverter.getGson()
+                    .toJson(newSoundsObject)
+                    .getBytes(StandardCharsets.UTF_8)
+            );
         }
-
-        Files.write(soundsJsonPath, Collections.singleton(packConverter.getGson().toJson(newSoundsObject)), Charset.forName("UTF-8"));
     }
 
 }

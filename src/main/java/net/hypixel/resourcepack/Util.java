@@ -6,7 +6,9 @@ import com.google.gson.stream.JsonReader;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
@@ -28,18 +30,22 @@ public final class Util {
     }
 
     public static void deleteDirectoryAndContents(Path dirPath) throws IOException {
-        if (!dirPath.toFile().exists()) return;
-
-        //noinspection ResultOfMethodCallIgnored
-        Files.walk(dirPath)
-                .sorted(Comparator.reverseOrder())
-                .map(Path::toFile)
-                .forEach(File::delete);
+        if (Files.exists(dirPath)) {
+            Files.walk(dirPath).sorted(Comparator.reverseOrder())
+                    .forEach(path -> {
+                        try {
+                            Files.delete(path);
+                        } catch (IOException ignored) {
+                        }
+                    });
+        }
     }
 
     public static boolean fileExistsCorrectCasing(Path path) throws IOException {
-        if (!path.toFile().exists()) return false;
-        return path.toString().equals(path.toFile().getCanonicalPath());
+        if (Files.exists(path)) {
+            return path.toAbsolutePath().equals(path.toRealPath());
+        }
+        return false;
     }
 
     public static JsonObject readJsonResource(Gson gson, String path) {
@@ -68,15 +74,7 @@ public final class Util {
 
     public static <T> T readJson(Gson gson, Path path, Class<T> clazz) throws IOException {
         // TODO Improvement: this will fail if there is a BOM in the file
-        return gson.fromJson(new JsonReader(new FileReader(path.toFile())), clazz);
-    }
-
-    /**
-     * @return null if file doesn't exist, {@code true} if successfully renamed, {@code false} if failed
-     */
-    public static Boolean renameFile(Path file, String newName) {
-        if (!file.toFile().exists()) return null;
-        return file.toFile().renameTo(new File(file.getParent() + "/" + newName));
+        return gson.fromJson(new JsonReader(Files.newBufferedReader(path)), clazz);
     }
 
     public static RuntimeException propagate(Throwable t) {

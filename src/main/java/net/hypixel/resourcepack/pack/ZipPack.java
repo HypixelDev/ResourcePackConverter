@@ -6,6 +6,7 @@ import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.ZipParameters;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class ZipPack extends Pack {
@@ -36,22 +37,29 @@ public class ZipPack extends Pack {
 
         @Override
         public void setup() throws IOException {
-            if (pack.getWorkingPath().toFile().exists()) {
+            Path workingPath = pack.getWorkingPath();
+            if (Files.exists(workingPath)) {
                 System.out.println("  Deleting existing conversion");
-                Util.deleteDirectoryAndContents(pack.getWorkingPath());
+                Util.deleteDirectoryAndContents(workingPath);
             }
 
             Path convertedZipPath = getConvertedZipPath();
-            if (convertedZipPath.toFile().exists()) {
+            if (Files.exists(convertedZipPath)) {
                 System.out.println("  Deleting existing conversion zip");
-                convertedZipPath.toFile().delete();
+                try {
+                    Files.delete(convertedZipPath);
+                } catch (IOException e) {
+                    System.err.println("  Failed to delete existing conversion zip: " + e.getMessage());
+                }
             }
-
-            pack.getWorkingPath().toFile().mkdir();
-
+            try {
+                Files.createDirectory(workingPath);
+            }catch (IOException e) {
+                System.err.println("  Failed to create working path: " + e.getMessage());
+            }
             try {
                 ZipFile zipFile = new ZipFile(pack.getOriginalPath().toFile());
-                zipFile.extractAll(pack.getWorkingPath().toString());
+                zipFile.extractAll(workingPath.toString());
             } catch (ZipException e) {
                 Util.propagate(e);
             }

@@ -11,6 +11,7 @@ import net.hypixel.resourcepack.pack.Pack;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -24,9 +25,11 @@ public class BlockStateConverter extends Converter {
 
     @Override
     public void convert(Pack pack) throws IOException {
-        Path states = pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" + File.separator + "blockstates");
-        if (!states.toFile().exists()) return;
-
+        Path states = pack.getMinecraftPath()
+                .resolve("blockstates");
+        if (!Files.exists(states)) {
+            return;
+        }
         Files.list(states)
                 .filter(file -> file.toString().endsWith(".json"))
                 .forEach(file -> {
@@ -68,9 +71,10 @@ public class BlockStateConverter extends Converter {
                         }
 
                         if (anyChanges) {
-                            Files.write(file, Collections.singleton(packConverter.getGson().toJson(json)), Charset.forName("UTF-8"));
-
-                            if (PackConverter.DEBUG) System.out.println("      Converted " + file.getFileName());
+                            Files.write(file, packConverter.getGson().toJson(json).getBytes(StandardCharsets.UTF_8));
+                            if (PackConverter.DEBUG) {
+                                System.out.println("      Converted " + file.getFileName());
+                            }
                         }
                     } catch (IOException e) {
                         Util.propagate(e);

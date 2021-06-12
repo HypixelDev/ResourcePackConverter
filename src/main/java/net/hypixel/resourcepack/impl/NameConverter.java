@@ -7,7 +7,6 @@ import net.hypixel.resourcepack.PackConverter;
 import net.hypixel.resourcepack.Util;
 import net.hypixel.resourcepack.pack.Pack;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,38 +24,62 @@ public class NameConverter extends Converter {
 
     @Override
     public void convert(Pack pack) throws IOException {
-        Path models = pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" + File.separator + "models");
-        if (models.resolve("blocks").toFile().exists()) Files.move(models.resolve("blocks"), models.resolve("block"));
-        renameAll(blockMapping, ".json", models.resolve("block"));
-        if (models.resolve("items").toFile().exists()) Files.move(models.resolve("items"), models.resolve("item"));
-        renameAll(itemMapping, ".json", models.resolve("item"));
+        { // Giving them their own scopes to reuse variable names
+            Path modelsPath = pack.getMinecraftPath().resolve("models");
+            Path blocksPath = modelsPath.resolve("blocks");
+            Path blockPath = modelsPath.resolve("block");
+            if (Files.exists(blocksPath)) {
+                Files.move(blocksPath, blockPath);
+            }
+            renameAll(blockMapping, ".json", blockPath);
+            Path itemsPath = modelsPath.resolve("items");
+            Path itemPath = modelsPath.resolve("item");
+            if (Files.exists(itemsPath)) {
+                Files.move(itemsPath, itemPath);
+            }
+            renameAll(itemMapping, ".json", itemPath);
 
-        Path blockStates = pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" + File.separator + "blockstates");
-        renameAll(itemMapping, ".json", blockStates);
-
-        Path textures = pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" + File.separator + "textures");
-        if (textures.resolve("blocks").toFile().exists()) Files.move(textures.resolve("blocks"), textures.resolve("block"));
-        renameAll(blockMapping, ".png", textures.resolve("block"));
-        renameAll(blockMapping, ".png.mcmeta", textures.resolve("block"));
-        if (textures.resolve("items").toFile().exists()) Files.move(textures.resolve("items"), textures.resolve("item"));
-        renameAll(itemMapping, ".png", textures.resolve("item"));
-        renameAll(itemMapping, ".png.mcmeta", textures.resolve("item"));
+            Path blockStates = pack.getMinecraftPath().resolve("blockstates");
+            renameAll(itemMapping, ".json", blockStates);
+        }
+        {
+            Path texturesPath = pack.getMinecraftPath().resolve("textures");
+            Path blocksPath = texturesPath.resolve("blocks");
+            Path blockPath = texturesPath.resolve("block");
+            if (Files.exists(blocksPath)) {
+                Files.move(blocksPath, blockPath);
+            }
+            renameAll(blockMapping, ".png", blockPath);
+            renameAll(blockMapping, ".png.mcmeta", blockPath);
+            Path itemsPath = texturesPath.resolve("items");
+            Path itemPath = texturesPath.resolve("item");
+            if (Files.exists(itemsPath)) {
+                Files.move(itemsPath, itemPath);
+            }
+            renameAll(itemMapping, ".png", itemPath);
+            renameAll(itemMapping, ".png.mcmeta", itemPath);
+        }
     }
 
     protected void renameAll(Mapping mapping, String extension, Path path) throws IOException {
-        if (path.toFile().exists()) {
-            Files.list(path).forEach(path1 -> {
-                if (!path1.toString().endsWith(extension)) return;
-
-                String baseName = path1.getFileName().toString().substring(0, path1.getFileName().toString().length() - extension.length());
+        if (Files.exists(path)) {
+            Files.list(path).forEach(file -> {
+                if (!file.toString().endsWith(extension)) {
+                    return;
+                }
+                String fileName = file.getFileName().toString();
+                String baseName = fileName.substring(0, fileName.length() - extension.length());
                 String newName = mapping.remap(baseName);
                 if (newName != null && !newName.equals(baseName)) {
-                    Boolean ret = Util.renameFile(path1, newName + extension);
-                    if (ret == null) return;
-                    if (ret && PackConverter.DEBUG) {
-                        System.out.println("      Renamed: " + path1.getFileName().toString() + "->" + newName + extension);
-                    } else if (!ret) {
-                        System.err.println("      Failed to rename: " + path1.getFileName().toString() + "->" + newName + extension);
+                    try {
+                        if (Files.exists(file)) {
+                            Files.move(file, file.getParent().resolve(newName + extension));
+                            if(PackConverter.DEBUG) {
+                                System.out.println("      Renamed: " + fileName + "->" + newName + extension);
+                            }
+                        }
+                    } catch (IOException e) {
+                        System.err.println("      Failed to rename: " + fileName + "->" + newName + extension);
                     }
                 }
             });

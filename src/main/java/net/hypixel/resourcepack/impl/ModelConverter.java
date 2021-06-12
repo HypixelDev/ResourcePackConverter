@@ -7,12 +7,10 @@ import net.hypixel.resourcepack.PackConverter;
 import net.hypixel.resourcepack.Util;
 import net.hypixel.resourcepack.pack.Pack;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.Map;
 
 public class ModelConverter extends Converter {
@@ -23,29 +21,29 @@ public class ModelConverter extends Converter {
 
     @Override
     public void convert(Pack pack) throws IOException {
-        Path models = pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" + File.separator + "models");
-
+        Path models = pack.getMinecraftPath().resolve("models");
         remapModelJson(models.resolve("block"));
         remapModelJson(models.resolve("item"));
     }
 
     protected void remapModelJson(Path path) throws IOException {
-        if (!path.toFile().exists()) return;
-
+        if (!Files.exists(path)) {
+            return;
+        }
         Files.list(path)
                 .filter(path1 -> path1.toString().endsWith(".json"))
                 .forEach(model -> {
                     try {
                         JsonObject jsonObject = Util.readJson(packConverter.getGson(), model);
 
-                        // minify the json so we can replace spaces in paths easily
+                        // minify the JSON, so we can replace spaces in paths easily
                         // TODO Improvement: handle this in a cleaner way?
                         String content = jsonObject.toString();
                         content = content.replaceAll("items/", "item/");
                         content = content.replaceAll("blocks/", "block/");
                         content = content.replaceAll(" ", "_");
 
-                        Files.write(model, Collections.singleton(content), Charset.forName("UTF-8"));
+                        Files.write(model, content.getBytes(StandardCharsets.UTF_8));
 
                         // handle the remapping of textures, for models that use default texture names
                         jsonObject = Util.readJson(packConverter.getGson(), model);
@@ -62,8 +60,10 @@ public class ModelConverter extends Converter {
                                 }
                             }
                         }
-
-                        Files.write(model, Collections.singleton(packConverter.getGson().toJson(jsonObject)), Charset.forName("UTF-8"));
+                        Files.write(model, packConverter.getGson()
+                                .toJson(jsonObject)
+                                .getBytes(StandardCharsets.UTF_8)
+                        );
                     } catch (IOException e) {
                         throw Util.propagate(e);
                     }

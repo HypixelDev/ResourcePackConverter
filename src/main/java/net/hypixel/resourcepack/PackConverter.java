@@ -63,7 +63,9 @@ public class PackConverter {
 
                         System.out.println("  Running Converters");
                         for (Converter converter : converters.values()) {
-                            if (PackConverter.DEBUG) System.out.println("    Running " + converter.getClass().getSimpleName());
+                            if (PackConverter.DEBUG) {
+                                System.out.println("    Running " + converter.getClass().getSimpleName());
+                            }
                             converter.convert(pack);
                         }
 

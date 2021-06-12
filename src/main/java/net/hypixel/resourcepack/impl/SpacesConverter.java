@@ -2,7 +2,6 @@ package net.hypixel.resourcepack.impl;
 
 import net.hypixel.resourcepack.Converter;
 import net.hypixel.resourcepack.PackConverter;
-import net.hypixel.resourcepack.Util;
 import net.hypixel.resourcepack.pack.Pack;
 
 import java.io.IOException;
@@ -20,16 +19,20 @@ public class SpacesConverter extends Converter {
         Path assets = pack.getWorkingPath().resolve("assets");
         if (!assets.toFile().exists()) return;
 
-        Files.walk(assets).forEach(path -> {
-            if (!path.getFileName().toString().contains(" ")) return;
-
-            String noSpaces = path.getFileName().toString().replaceAll(" ", "_");
-            Boolean ret = Util.renameFile(path, noSpaces);
-            if (ret == null) return;
-            if (ret && PackConverter.DEBUG) {
-                System.out.println("      Renamed: " + path.getFileName().toString() + "->" + noSpaces);
-            } else if (!ret) {
-                System.err.println("      Failed to rename: " + path.getFileName().toString() + "->" + noSpaces);
+        Files.walk(assets).forEach(file -> {
+            String fileName = file.getFileName().toString();
+            if (fileName.contains(" ")) {
+                String noSpaces = fileName.replaceAll(" ", "_");
+                try {
+                    if (Files.exists(file)) {
+                        Files.move(file, file.getParent().resolve(noSpaces));
+                        if (PackConverter.DEBUG) {
+                            System.out.println("      Renamed: " + file.getFileName().toString() + "->" + noSpaces);
+                        }
+                    }
+                } catch (IOException e) {
+                    System.err.println("      Failed to rename: " + file.getFileName().toString() + "->" + noSpaces);
+                }
             }
         });
     }
