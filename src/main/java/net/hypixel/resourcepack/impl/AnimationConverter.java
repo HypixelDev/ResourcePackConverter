@@ -7,12 +7,10 @@ import net.hypixel.resourcepack.PackConverter;
 import net.hypixel.resourcepack.Util;
 import net.hypixel.resourcepack.pack.Pack;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
 
 public class AnimationConverter extends Converter {
 
@@ -22,13 +20,15 @@ public class AnimationConverter extends Converter {
 
     @Override
     public void convert(Pack pack) throws IOException {
-        fixAnimations(pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" + File.separator + "textures" + File.separator + "block"));
-        fixAnimations(pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" + File.separator + "textures" + File.separator + "item"));
+        Path texturesPath = pack.getMinecraftPath().resolve("textures");
+        fixAnimations(texturesPath.resolve("block"));
+        fixAnimations(texturesPath.resolve("item"));
     }
 
     protected void fixAnimations(Path animations) throws IOException {
-        if (!animations.toFile().exists()) return;
-
+        if (!Files.exists(animations)) {
+            return;
+        }
         Files.list(animations)
                 .filter(file -> file.toString().endsWith(".png.mcmeta"))
                 .forEach(file -> {
@@ -48,9 +48,10 @@ public class AnimationConverter extends Converter {
                         }
 
                         if (anyChanges) {
-                            Files.write(file, Collections.singleton(packConverter.getGson().toJson(json)), Charset.forName("UTF-8"));
-
-                            if (PackConverter.DEBUG) System.out.println("      Converted " + file.getFileName());
+                            Files.write(file, packConverter.getGson().toJson(json).getBytes(StandardCharsets.UTF_8));
+                            if (PackConverter.DEBUG) {
+                                System.out.println("      Converted " + file.getFileName());
+                            }
                         }
                     } catch (IOException e) {
                         Util.propagate(e);

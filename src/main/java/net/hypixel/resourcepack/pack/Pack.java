@@ -3,17 +3,22 @@ package net.hypixel.resourcepack.pack;
 import net.hypixel.resourcepack.Util;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class Pack {
 
-    protected static final String CONVERTED_SUFFIX = "_converted_1_13";
+    private static final String CONVERTED_SUFFIX = "_converted_1_13";
 
     protected Path path;
+    private final Path workingPath;
+    private final Path minecraftPath;
     protected Handler handler;
 
     protected Pack(Path path) {
         this.path = path;
+        this.workingPath = path.getParent().resolve(getFileName() + CONVERTED_SUFFIX);
+        this.minecraftPath = workingPath.resolve("assets").resolve("minecraft");
         this.handler = createHandler();
     }
 
@@ -42,7 +47,11 @@ public class Pack {
     }
 
     public Path getWorkingPath() {
-        return path.getParent().resolve(getFileName() + CONVERTED_SUFFIX);
+        return workingPath;
+    }
+
+    public Path getMinecraftPath() {
+        return minecraftPath;
     }
 
     public String getFileName() {
@@ -65,13 +74,13 @@ public class Pack {
         }
 
         public void setup() throws IOException {
-            if (pack.getWorkingPath().toFile().exists()) {
+            Path workingPath = pack.getWorkingPath();
+            if (Files.exists(workingPath)) {
                 System.out.println("  Deleting existing conversion");
-                Util.deleteDirectoryAndContents(pack.getWorkingPath());
+                Util.deleteDirectoryAndContents(workingPath);
             }
-
             System.out.println("  Copying existing pack");
-            Util.copyDir(pack.getOriginalPath(), pack.getWorkingPath());
+            Util.copyDir(pack.getOriginalPath(), workingPath);
         }
 
         public void finish() throws IOException {
