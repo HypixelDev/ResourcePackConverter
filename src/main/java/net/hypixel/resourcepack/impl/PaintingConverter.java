@@ -26,6 +26,9 @@ public class PaintingConverter extends Converter {
         registerPaintings();
     }
 
+    /**
+     * Registers the painting locations, 1 unit here = 16 pixels on the default 256x256 image
+     */
     private void registerPaintings() {
         // 1x1 paintings
         this.paintings.put(new Location(0, 0, 1, 1), "kebab");
