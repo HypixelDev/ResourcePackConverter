@@ -3,6 +3,7 @@ package net.hypixel.resourcepack.impl;
 import net.hypixel.resourcepack.Converter;
 import net.hypixel.resourcepack.MinecraftVersion;
 import net.hypixel.resourcepack.PackConverter;
+import net.hypixel.resourcepack.Util;
 import net.hypixel.resourcepack.pack.Pack;
 
 import javax.imageio.ImageIO;
@@ -100,8 +101,9 @@ public class PaintingConverter extends Converter {
                 if (PackConverter.DEBUG) {
                     System.out.println("      Exported painting " + outputFile.getFileName());
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException t) {
+                System.out.println("      Failed to convert painting " + outputFile.getFileName());
+                Util.propagate(t);
             }
         });
     }
