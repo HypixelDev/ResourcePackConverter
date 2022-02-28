@@ -106,6 +106,9 @@ public class PaintingConverter extends Converter {
                 Util.propagate(t);
             }
         });
+
+        // Remove the old painting directory
+        Files.delete(imagePath.getParent());
     }
 
     private static class Location {
