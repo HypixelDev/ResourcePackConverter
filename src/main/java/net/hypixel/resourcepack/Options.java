@@ -21,7 +21,12 @@ public class Options {
 
     public static final OptionSpec<Void> MINIFY = PARSER.accepts("minify", "Minify the json files.");
 
-    public static class PathConverter implements ValueConverter<Path> {
+    public static final OptionSpec<MinecraftVersion> VERSION = PARSER.acceptsAll(Arrays.asList("version", "v", "ver"), "The wanted output version for the resource pack.")
+            .withRequiredArg()
+            .withValuesConvertedBy(new MinecraftVersionConverter())
+            .defaultsTo(MinecraftVersion.v1_14);
+
+    private static class PathConverter implements ValueConverter<Path> {
 
         @Override
         public Path convert(String s) {
@@ -31,6 +36,31 @@ public class Options {
         @Override
         public Class<? extends Path> valueType() {
             return Path.class;
+        }
+
+        @Override
+        public String valuePattern() {
+            return "*";
+        }
+    }
+
+    private static class MinecraftVersionConverter implements ValueConverter<MinecraftVersion> {
+
+        @Override
+        public MinecraftVersion convert(String s) {
+            switch (s) {
+                case "1.13":
+                    return MinecraftVersion.v1_13;
+                case "1.14":
+                case "latest":
+                    return MinecraftVersion.v1_14;
+            }
+            return null;
+        }
+
+        @Override
+        public Class<? extends MinecraftVersion> valueType() {
+            return MinecraftVersion.class;
         }
 
         @Override

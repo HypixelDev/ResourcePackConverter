@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.hypixel.resourcepack.Converter;
 import net.hypixel.resourcepack.PackConverter;
+import net.hypixel.resourcepack.MinecraftVersion;
 import net.hypixel.resourcepack.Util;
 import net.hypixel.resourcepack.pack.Pack;
 
@@ -20,6 +21,11 @@ public class BlockStateConverter extends Converter {
 
     public BlockStateConverter(PackConverter packConverter) {
         super(packConverter);
+    }
+
+    @Override
+    public MinecraftVersion getVersion() {
+        return MinecraftVersion.v1_13;
     }
 
     @Override

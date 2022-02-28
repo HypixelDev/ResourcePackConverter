@@ -2,6 +2,7 @@ package net.hypixel.resourcepack.impl;
 
 import net.hypixel.resourcepack.Converter;
 import net.hypixel.resourcepack.PackConverter;
+import net.hypixel.resourcepack.MinecraftVersion;
 import net.hypixel.resourcepack.Util;
 import net.hypixel.resourcepack.pack.Pack;
 
@@ -31,6 +32,11 @@ public class MapIconConverter extends Converter {
         mapping.put(pack(24, 8), pack(56, 0));
         mapping.put(pack(0, 16), pack(64, 0));
         mapping.put(pack(8, 16), pack(72, 0));
+    }
+
+    @Override
+    public MinecraftVersion getVersion() {
+        return MinecraftVersion.v1_13;
     }
 
     @Override

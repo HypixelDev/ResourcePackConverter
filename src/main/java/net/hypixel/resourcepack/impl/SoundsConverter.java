@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.hypixel.resourcepack.Converter;
 import net.hypixel.resourcepack.PackConverter;
+import net.hypixel.resourcepack.MinecraftVersion;
 import net.hypixel.resourcepack.Util;
 import net.hypixel.resourcepack.pack.Pack;
 
@@ -21,6 +22,11 @@ public class SoundsConverter extends Converter {
 
     public SoundsConverter(PackConverter packConverter) {
         super(packConverter);
+    }
+
+    @Override
+    public MinecraftVersion getVersion() {
+        return MinecraftVersion.v1_13;
     }
 
     @Override

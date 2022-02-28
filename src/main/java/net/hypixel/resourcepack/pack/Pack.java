@@ -7,7 +7,7 @@ import java.nio.file.Path;
 
 public class Pack {
 
-    protected static final String CONVERTED_SUFFIX = "_converted_1_13";
+    protected static final String CONVERTED_SUFFIX = "_converted";
 
     protected Path path;
     protected Handler handler;
@@ -31,7 +31,6 @@ public class Pack {
         }
         return null;
     }
-
 
     public Path getOriginalPath() {
         return path;
