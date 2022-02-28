@@ -87,15 +87,11 @@ public class PaintingConverter extends Converter {
 
         BufferedImage image = ImageIO.read(imagePath.toFile());
 
-        Path newDir = pack.getWorkingPath().resolve("assets" + File.separator + "minecraft" + File.separator + "textures" + File.separator + "paintings");
-        if (!Files.exists(newDir)) {
-            Files.createDirectory(newDir);
-        }
-
+        Path paintingsDir = imagePath.getParent();
         int multiplier = image.getWidth() / 16;
         this.paintings.forEach((location, output) -> {
             BufferedImage subImage = image.getSubimage(location.x * multiplier, location.y * multiplier, location.width * multiplier, location.height * multiplier);
-            Path outputFile = newDir.resolve(output + ".png");
+            Path outputFile = paintingsDir.resolve(output + ".png");
             try {
                 ImageIO.write(subImage, "png", outputFile.toFile());
                 if (PackConverter.DEBUG) {
@@ -107,9 +103,8 @@ public class PaintingConverter extends Converter {
             }
         });
 
-        // Remove the old painting image and directory
+        // Remove the old painting image
         Files.delete(imagePath);
-        Files.delete(imagePath.getParent());
     }
 
     private static class Location {
