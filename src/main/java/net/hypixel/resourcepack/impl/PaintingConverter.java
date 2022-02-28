@@ -69,6 +69,9 @@ public class PaintingConverter extends Converter {
         // 4x3 paintings
         this.paintings.put(new Location(12, 4, 4, 3), "skeleton");
         this.paintings.put(new Location(12, 7, 4, 3), "donkey_kong");
+
+        // 1x1 back image
+        this.paintings.put(new Location(12, 0, 1, 1), "back");
     }
 
     @Override
