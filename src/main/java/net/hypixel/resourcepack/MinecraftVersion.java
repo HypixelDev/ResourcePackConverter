@@ -41,4 +41,9 @@ public enum MinecraftVersion {
         return BY_NAME.get(name);
     }
 
+    public static MinecraftVersion getLatest() {
+        MinecraftVersion[] versions = values();
+        return versions[versions.length - 1];
+    }
+
 }
