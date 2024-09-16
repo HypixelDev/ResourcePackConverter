@@ -1,6 +1,7 @@
 package net.hypixel.resourcepack;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 
@@ -69,6 +70,23 @@ public final class Util {
     public static <T> T readJson(Gson gson, Path path, Class<T> clazz) throws IOException {
         // TODO Improvement: this will fail if there is a BOM in the file
         return gson.fromJson(new JsonReader(new FileReader(path.toFile())), clazz);
+    }
+
+    public static void writeJson(Gson gson, Path path, JsonElement json, boolean dontEscapeUnicode) {
+        try (FileWriter fileWriter = new FileWriter(path.toFile())) {
+            String jsonString = gson.toJson(json);
+            if (dontEscapeUnicode) {
+                jsonString = jsonString.replace("\\\\u", "\\u");
+            }
+
+            fileWriter.write(jsonString);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void writeJson(Gson gson, Path path, JsonElement json) {
+        writeJson(gson, path, json, true);
     }
 
     /**
