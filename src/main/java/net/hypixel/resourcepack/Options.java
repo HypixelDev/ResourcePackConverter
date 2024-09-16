@@ -48,14 +48,12 @@ public class Options {
 
         @Override
         public MinecraftVersion convert(String s) {
-            switch (s) {
-                case "1.13":
-                    return MinecraftVersion.v1_13;
-                case "1.14":
-                case "latest":
-                    return MinecraftVersion.v1_14;
+            if (s.equalsIgnoreCase("latest")) {
+                MinecraftVersion[] values = MinecraftVersion.values();
+                return values[values.length - 1];
             }
-            return null;
+
+            return MinecraftVersion.getByName(s);
         }
 
         @Override
