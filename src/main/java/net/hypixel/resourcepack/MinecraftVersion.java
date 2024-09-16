@@ -7,7 +7,7 @@ public enum MinecraftVersion {
 
     v1_13("1.13", 4),
     v1_14("1.14", 4),
-    v1_20("1.20", 15)
+    v1_20("1.20", 15),
     ;
 
     private static final Map<String, MinecraftVersion> BY_NAME;
