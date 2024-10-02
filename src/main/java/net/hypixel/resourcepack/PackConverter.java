@@ -18,6 +18,7 @@ public class PackConverter {
 
     protected final OptionSet optionSet;
     protected final Gson gson;
+    protected final MinecraftVersion version;
 
     protected final Map<Class<? extends Converter>, Converter> converters = new LinkedHashMap<>();
 
@@ -25,13 +26,22 @@ public class PackConverter {
         this.optionSet = optionSet;
 
         GsonBuilder gsonBuilder = new GsonBuilder();
-        if (!this.optionSet.has(Options.MINIFY)) gsonBuilder.setPrettyPrinting();
+        if (!this.optionSet.has(Options.MINIFY)) {
+            gsonBuilder.setPrettyPrinting();
+        }
         this.gson = gsonBuilder.create();
+        this.version = this.optionSet.valueOf(Options.VERSION);
+        if (this.version == null) {
+            System.out.println("Invalid version provided!");
+            System.exit(0);
+            return;
+        }
 
         // this needs to be run first, other converters might reference new directory names
         this.registerConverter(new NameConverter(this));
 
-        this.registerConverter(new PackMetaConverter(this));
+        this.registerConverter(new PackMeta13Converter(this));
+        this.registerConverter(new PackMeta14Converter(this));
 
         this.registerConverter(new ModelConverter(this));
         this.registerConverter(new SpacesConverter(this));
@@ -40,6 +50,7 @@ public class PackConverter {
         this.registerConverter(new BlockStateConverter(this));
         this.registerConverter(new AnimationConverter(this));
         this.registerConverter(new MapIconConverter(this));
+        this.registerConverter(new PaintingConverter(this));
     }
 
     public void registerConverter(Converter converter) {
@@ -63,7 +74,12 @@ public class PackConverter {
 
                         System.out.println("  Running Converters");
                         for (Converter converter : converters.values()) {
-                            if (PackConverter.DEBUG) System.out.println("    Running " + converter.getClass().getSimpleName());
+                            if (version.ordinal() < converter.getVersion().ordinal()) {
+                                continue;
+                            }
+                            if (PackConverter.DEBUG) {
+                                System.out.println("    Running " + converter.getClass().getSimpleName());
+                            }
                             converter.convert(pack);
                         }
 

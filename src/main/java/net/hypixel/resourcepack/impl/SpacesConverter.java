@@ -2,6 +2,7 @@ package net.hypixel.resourcepack.impl;
 
 import net.hypixel.resourcepack.Converter;
 import net.hypixel.resourcepack.PackConverter;
+import net.hypixel.resourcepack.MinecraftVersion;
 import net.hypixel.resourcepack.Util;
 import net.hypixel.resourcepack.pack.Pack;
 
@@ -13,6 +14,11 @@ public class SpacesConverter extends Converter {
 
     public SpacesConverter(PackConverter packConverter) {
         super(packConverter);
+    }
+
+    @Override
+    public MinecraftVersion getVersion() {
+        return MinecraftVersion.v1_13;
     }
 
     @Override

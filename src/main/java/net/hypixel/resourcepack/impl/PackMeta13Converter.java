@@ -3,6 +3,7 @@ package net.hypixel.resourcepack.impl;
 import com.google.gson.JsonObject;
 import net.hypixel.resourcepack.Converter;
 import net.hypixel.resourcepack.PackConverter;
+import net.hypixel.resourcepack.MinecraftVersion;
 import net.hypixel.resourcepack.Util;
 import net.hypixel.resourcepack.pack.Pack;
 
@@ -12,10 +13,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 
-public class PackMetaConverter extends Converter {
+public class PackMeta13Converter extends Converter {
 
-    public PackMetaConverter(PackConverter packConverter) {
+    public PackMeta13Converter(PackConverter packConverter) {
         super(packConverter);
+    }
+
+    @Override
+    public MinecraftVersion getVersion() {
+        return MinecraftVersion.v1_13;
     }
 
     @Override

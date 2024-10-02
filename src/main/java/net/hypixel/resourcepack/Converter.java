@@ -12,6 +12,8 @@ public abstract class Converter {
         this.packConverter = packConverter;
     }
 
+    public abstract MinecraftVersion getVersion();
+
     public abstract void convert(Pack pack) throws IOException;
 
 }

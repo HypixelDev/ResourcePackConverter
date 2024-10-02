@@ -2,6 +2,7 @@ package net.hypixel.resourcepack.impl;
 
 import net.hypixel.resourcepack.Converter;
 import net.hypixel.resourcepack.PackConverter;
+import net.hypixel.resourcepack.MinecraftVersion;
 import net.hypixel.resourcepack.pack.Pack;
 
 import javax.imageio.ImageIO;
@@ -15,6 +16,11 @@ public class ParticleConverter extends Converter {
 
     public ParticleConverter(PackConverter packConverter) {
         super(packConverter);
+    }
+
+    @Override
+    public MinecraftVersion getVersion() {
+        return MinecraftVersion.v1_13;
     }
 
     @Override
