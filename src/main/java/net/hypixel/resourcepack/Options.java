@@ -24,7 +24,7 @@ public class Options {
     public static final OptionSpec<MinecraftVersion> VERSION = PARSER.acceptsAll(Arrays.asList("version", "v", "ver"), "The wanted output version for the resource pack.")
             .withRequiredArg()
             .withValuesConvertedBy(new MinecraftVersionConverter())
-            .defaultsTo(MinecraftVersion.v1_14);
+            .defaultsTo(MinecraftVersion.getLatest());
 
     private static class PathConverter implements ValueConverter<Path> {
 
@@ -48,14 +48,7 @@ public class Options {
 
         @Override
         public MinecraftVersion convert(String s) {
-            switch (s) {
-                case "1.13":
-                    return MinecraftVersion.v1_13;
-                case "1.14":
-                case "latest":
-                    return MinecraftVersion.v1_14;
-            }
-            return null;
+            return s.equalsIgnoreCase("latest") ? MinecraftVersion.getLatest() : MinecraftVersion.getByName(s);
         }
 
         @Override

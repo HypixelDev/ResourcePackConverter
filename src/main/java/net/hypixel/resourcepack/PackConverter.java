@@ -40,8 +40,9 @@ public class PackConverter {
         // this needs to be run first, other converters might reference new directory names
         this.registerConverter(new NameConverter(this));
 
-        this.registerConverter(new PackMeta13Converter(this));
-        this.registerConverter(new PackMeta14Converter(this));
+        for (MinecraftVersion version : MinecraftVersion.values()) {
+            this.registerConverter(new PackMetaConverter(this, version));
+        }
 
         this.registerConverter(new ModelConverter(this));
         this.registerConverter(new SpacesConverter(this));
@@ -51,6 +52,7 @@ public class PackConverter {
         this.registerConverter(new AnimationConverter(this));
         this.registerConverter(new MapIconConverter(this));
         this.registerConverter(new PaintingConverter(this));
+        this.registerConverter(new UnicodeFontConverter(this));
     }
 
     public void registerConverter(Converter converter) {
