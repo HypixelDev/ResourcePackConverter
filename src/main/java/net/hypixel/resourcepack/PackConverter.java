@@ -47,7 +47,8 @@ public class PackConverter {
         this.registerConverter(new ModelConverter(this));
         this.registerConverter(new SpacesConverter(this));
         this.registerConverter(new SoundsConverter(this));
-        this.registerConverter(new ParticleConverter(this));
+        this.registerConverter(new ParticleSizeChangeConverter(this));
+        this.registerConverter(new ParticleSeparatorConverter(this));
         this.registerConverter(new BlockStateConverter(this));
         this.registerConverter(new AnimationConverter(this));
         this.registerConverter(new MapIconConverter(this));

@@ -12,9 +12,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class ParticleConverter extends Converter {
+public class ParticleSizeChangeConverter extends Converter {
 
-    public ParticleConverter(PackConverter packConverter) {
+    // 1.13 expanded the size of the texture atlas. This does that, but doesn't fill the new textures
+    public ParticleSizeChangeConverter(PackConverter packConverter) {
         super(packConverter);
     }
 
