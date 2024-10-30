@@ -53,6 +53,7 @@ public class PackConverter {
         this.registerConverter(new MapIconConverter(this));
         this.registerConverter(new PaintingConverter(this));
         this.registerConverter(new UnicodeFontConverter(this));
+        this.registerConverter(new ArmorModelConverter(this));
     }
 
     public void registerConverter(Converter converter) {

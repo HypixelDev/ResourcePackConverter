@@ -11,11 +11,20 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public final class Util {
 
     private Util() {
         throw new UnsupportedOperationException("This class cannot be instantiated");
+    }
+
+    public static <K, V, M extends Map<K, V>> M createMap(Supplier<M> mapSupplier, Consumer<M> initializer) {
+        M map = mapSupplier.get();
+        initializer.accept(map);
+        return map;
     }
 
     public static void copyDir(Path src, Path dest) throws IOException {
