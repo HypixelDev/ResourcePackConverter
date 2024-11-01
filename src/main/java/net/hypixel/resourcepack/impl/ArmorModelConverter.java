@@ -82,12 +82,12 @@ public class ArmorModelConverter extends Converter {
             Path relativeLegacyDirectory = pack.getWorkingPath().relativize(legacyTexturePath);
             Path relativeModernDirectory = pack.getWorkingPath().relativize(modernTexturePath);
             if (Files.exists(modernTexturePath)) {
-                System.err.println("      Would have moved " + relativeLegacyDirectory + " to " + relativeModernDirectory + " but a file already exists!");
+                System.err.println("      Would have copied " + relativeLegacyDirectory + " to " + relativeModernDirectory + " but a file already exists!");
                 continue;
             }
 
-            Files.move(legacyTexturePath, modernTexturePath);
-            System.out.println("      Moved " + relativeLegacyDirectory + " to " + relativeModernDirectory);
+            Files.copy(legacyTexturePath, modernTexturePath);
+            System.out.println("      Copied " + relativeLegacyDirectory + " to " + relativeModernDirectory);
         }
 
         if (Files.list(legacyArmorModelDirectory).count() == 0) {
